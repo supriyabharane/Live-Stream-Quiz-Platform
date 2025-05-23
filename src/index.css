@@ -1,0 +1,23 @@
+/* client/src/index.css */
+
+
+/* src/index.css */
+/* src/index.css */
+/* src/index.css */
+/* src/index.css */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a2e; /* dark purple/blue like Physics Wallah */
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: #82c91e;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
