@@ -12,7 +12,7 @@ import Streams from "./pages/Streams";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import User from "./pages/userpage"; // Or UserPage if that's the filename
+import User from "./pages/UserPage"; // Or UserPage if that's the filename
 import AdminPage from "./pages/AdminPage";
 import AdminLogin from "./pages/AdminLogin";
 
