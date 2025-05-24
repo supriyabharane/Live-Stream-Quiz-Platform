@@ -3,93 +3,134 @@
 
 
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+export default function AdminPage() {
+  // Simulated viewer counts
+  const [viewerCounts, setViewerCounts] = useState({
+    blackjack: Math.floor(Math.random() * 100) + 50,
+    roulette: Math.floor(Math.random() * 100) + 30,
+    poker: Math.floor(Math.random() * 100) + 10,
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-      alert("Login successful!");
-      navigate("/streams");
-    } else {
-      alert("Invalid credentials");
-    }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewerCounts({
+        blackjack: Math.floor(Math.random() * 100) + 50,
+        roulette: Math.floor(Math.random() * 100) + 30,
+        poker: Math.floor(Math.random() * 100) + 10,
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("isAdmin");
+    window.location.reload();
   };
 
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #1a1a1a 60%, #ffd700 100%)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
+      background: "linear-gradient(135deg, #232526 60%, #1abc9c 100%)",
+      padding: 40
     }}>
+      <h1 style={{ color: "#ffd700", fontFamily: '"Cinzel Decorative", "Orbitron", serif' }}>
+        Admin Dashboard
+      </h1>
+      <button onClick={handleLogout} style={{
+        position: "absolute", top: 20, right: 20, padding: "8px 16px",
+        background: "#1abc9c", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer"
+      }}>Logout</button>
       <div style={{
-        background: "#222",
-        borderRadius: 12,
-        boxShadow: "0 4px 24px #0008",
-        padding: 32,
-        maxWidth: 420,
-        width: "100%"
+        background: "rgba(24,24,24,0.85)",
+        borderRadius: 14,
+        padding: 24,
+        margin: "32px 0",
+        color: "#fff",
+        maxWidth: 600
       }}>
-        <h2 style={{ color: "#ffd700", textAlign: "center", marginBottom: 24 }}>Login</h2>
-        <form onSubmit={handleSubmit}>
+        <h2 style={{ color: "#ffd700" }}>Streams</h2>
+        <ul>
+          <li>
+            Blackjack Live
+            <span style={{marginLeft:12, color:"#1abc9c"}}>👁️ {viewerCounts.blackjack} viewers</span>
+            <button style={{marginLeft:8}}>Start</button>
+            <button style={{marginLeft:8}}>Stop</button>
+          </li>
+          <li>
+            Roulette Royale
+            <span style={{marginLeft:12, color:"#1abc9c"}}>👁️ {viewerCounts.roulette} viewers</span>
+            <button style={{marginLeft:8}}>Start</button>
+            <button style={{marginLeft:8}}>Stop</button>
+          </li>
+          <li>
+            Poker Night
+            <span style={{marginLeft:12, color:"#1abc9c"}}>👁️ {viewerCounts.poker} viewers</span>
+            <button style={{marginLeft:8}}>Start</button>
+            <button style={{marginLeft:8}}>Stop</button>
+          </li>
+        </ul>
+        <h2 style={{ color: "#ffd700", marginTop: 24 }}>Create Quiz</h2>
+        <input placeholder="Question" style={{width:"100%",marginBottom:8,padding:8,borderRadius:6}} />
+        <input placeholder="Option 1" style={{width:"100%",marginBottom:8,padding:8,borderRadius:6}} />
+        <input placeholder="Option 2" style={{width:"100%",marginBottom:8,padding:8,borderRadius:6}} />
+        <input placeholder="Option 3" style={{width:"100%",marginBottom:8,padding:8,borderRadius:6}} />
+        <input placeholder="Option 4" style={{width:"100%",marginBottom:8,padding:8,borderRadius:6}} />
+        <button style={{
+          width:"100%",padding:10,background:"linear-gradient(90deg,#ffd700,#1abc9c)",color:"#181818",
+          border:"none",borderRadius:8,fontWeight:"bold",fontSize:16,marginTop:8
+        }}>Activate Quiz</button>
+
+        <h2 style={{ color: "#ffd700", marginTop: 32 }}>Wallet Top-up</h2>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            const uname = e.target.username.value.trim();
+            const amt = parseInt(e.target.amount.value, 10);
+            if (!uname || isNaN(amt) || amt <= 0) {
+              alert("Enter valid username and amount");
+              return;
+            }
+            // Try to get user from localStorage
+            let user = JSON.parse(localStorage.getItem("user") || "{}");
+            if (!user.username || user.username !== uname) {
+              alert("User not found or not logged in on this browser.");
+              return;
+            }
+            user.wallet = (user.wallet || 0) + amt;
+            localStorage.setItem("user", JSON.stringify(user));
+            alert(`Added ${amt} points to ${uname}'s wallet!`);
+            e.target.reset();
+          }}
+          style={{ marginTop: 12 }}
+        >
           <input
-            type="text"
+            name="username"
             placeholder="Username"
-            value={username}
-            required
-            onChange={e => setUsername(e.target.value)}
-            style={{
-              width: "100%",
-              marginBottom: 12,
-              padding: "10px",
-              borderRadius: 6,
-              border: "1px solid #ffd700",
-              background: "#222",
-              color: "#ffd700"
-            }}
+            style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 6 }}
           />
           <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            required
-            onChange={e => setPassword(e.target.value)}
-            style={{
-              width: "100%",
-              marginBottom: 12,
-              padding: "10px",
-              borderRadius: 6,
-              border: "1px solid #ffd700",
-              background: "#222",
-              color: "#ffd700"
-            }}
+            name="amount"
+            type="number"
+            placeholder="Amount"
+            style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 6 }}
           />
           <button
             type="submit"
             style={{
-              background: "linear-gradient(90deg, #ffd700, #ffb300)",
-              color: "#222",
-              border: "none",
-              borderRadius: 6,
-              padding: "10px 24px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: "0 2px 8px #0004",
               width: "100%",
-              marginTop: 8
+              padding: 10,
+              background: "linear-gradient(90deg,#ffd700,#1abc9c)",
+              color: "#181818",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: "bold",
+              fontSize: 16
             }}
           >
-            Login
+            Top Up Wallet
           </button>
         </form>
       </div>
