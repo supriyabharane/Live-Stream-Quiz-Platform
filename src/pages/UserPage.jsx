@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import QuizPopup from "../components/QuizPopup";
 import Wallet from "../components/Wallet";
 import ChatBox from "../components/ChatBox";
-import UserPage from "./pages/UserPage";
+//import UserPage from "./pages/UserPage";
 
 export default function UserPage() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
